@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:crm_spx/src/constants/responsive.dart';
 import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart';
 import 'package:crm_spx/src/models/campaign_model.dart';
+import 'package:crm_spx/src/models/user_model.dart';
 import 'package:crm_spx/src/pages/compaign_page/components/title_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/check_box_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/date_time_item_widget.dart';
@@ -12,6 +13,7 @@ import 'package:crm_spx/src/scripting_Widget/multi_checkbox_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/multi_radio_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/radio_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/text_item_widget.dart';
+import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:crm_spx/src/utils/dropdown.dart';
 import 'package:crm_spx/src/widgets/title_page.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +105,21 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
     }
     super.dispose();
   }
+
+
+  String? userName;
+  String? role;
+  String? superviseur;
+
+  void userPrefs() async {
+    User user = await UserPreferences.read();
+    setState(() {
+      userName = user.userName;
+      role = user.role;
+      superviseur = user.superviseur;
+    });
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -679,8 +696,9 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
         title: widget.campaignModel.title,
         subTitle: widget.campaignModel.subTitle,
         date: widget.campaignModel.date,
-        userName: 'Admin',
-        superviseur: '');
+        userName: userName.toString(),
+        superviseur: superviseur.toString(),
+    );
 
     await CampaignRepository().updateData(campaignModel);
     // Navigator.of(context).pop();

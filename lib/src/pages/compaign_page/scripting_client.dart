@@ -1,9 +1,12 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:crm_spx/src/constants/responsive.dart';
 import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart';
+import 'package:crm_spx/src/global/repository/scripting/scripting_repository.dart';
 import 'package:crm_spx/src/models/campaign_model.dart';
+import 'package:crm_spx/src/models/scripting_model.dart';
 import 'package:crm_spx/src/models/user_model.dart';
 import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:crm_spx/src/utils/loading.dart';
@@ -25,13 +28,19 @@ class _ScriptingClientState extends State<ScriptingClient> {
   final _form = GlobalKey<FormState>();
   // final ScrollController _controllerTwo = ScrollController();
   bool isloading = false;
-
   List<CampaignModel> listCampaign = [];
 
+  late List<Map<String, dynamic>> _reponseJson;
+
+  // List<String> textRespoList = [];
+  // List<String> dateTimeRespoList = [];
+  // List<String> multiRadioRespoList = []; // Multi Radio
+  // List<String> dropdownRespoList = []; // Dropdown
+  // List<String> conditionRespList = [];
   String? textRespo;
   String? dateTimeRespo;
-  String? multiRadioRespo; // Multi Radio
-  String? dropdownRespo; // Dropdown
+  String? multiRadioRespo;
+  String? dropdownRespo;
   List<String> multiChecked = []; // Multi checkbox
   String? conditionResp;
 
@@ -43,6 +52,8 @@ class _ScriptingClientState extends State<ScriptingClient> {
         t.cancel();
       });
     });
+    _reponseJson = [];
+    userPrefs();
     super.initState();
   }
 
@@ -212,30 +223,33 @@ class _ScriptingClientState extends State<ScriptingClient> {
                 ],
               ),
               if (s['value'][1]['typeWidget'] == 'Text')
-                textFormFieldWidget(s['id']),
-            
-            // if(s['value'][2]['condition'][0]['qOui'] == ' ' && s['value'][2]['condition'][1]['qNon'] == ' ')
-              
+                textFormFieldWidget(s['id'], s['value'][0]['question']),
+
+              // if(s['value'][2]['condition'][0]['qOui'] == ' ' && s['value'][2]['condition'][1]['qNon'] == ' ')
+
               if (s['value'][1]['typeWidget'] == 'Condition')
-                radioFieldWidget(s['id']),
-              
+                radioFieldWidget(s['id'], s['value'][0]['question']),
+
               if (s['value'][1]['typeWidget'] == 'MultiRadio')
-                multiRadioFieldWidget(s['id'], s['value'][3]['multiChoice']),
-              
+                multiRadioFieldWidget(s['id'], s['value'][0]['question'],
+                    s['value'][3]['multiChoice']),
+
               if (s['value'][1]['typeWidget'] == 'MultiCheckBox')
-                multiCheckboxFieldWidget(s['id'], s['value'][3]['multiChoice']),
-              
+                multiCheckboxFieldWidget(s['id'], s['value'][0]['question'],
+                    s['value'][3]['multiChoice']),
+
               if (s['value'][1]['typeWidget'] == 'Dropdown')
-                dropdownFieldWidget(s['id'], s['value'][3]['multiChoice']),
-              
+                dropdownFieldWidget(s['id'], s['value'][0]['question'],
+                    s['value'][3]['multiChoice']),
+
               if (s['value'][1]['typeWidget'] == 'DateTIme')
-                dateTimeFieldWidget(s['id']),
+                dateTimeFieldWidget(s['id'], s['value'][0]['question']),
             ],
           )),
     );
   }
 
-  Widget textFormFieldWidget(int id) {
+  Widget textFormFieldWidget(int id, String question) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: TextFormField(
@@ -247,27 +261,37 @@ class _ScriptingClientState extends State<ScriptingClient> {
             borderRadius: BorderRadius.circular(5.0),
           ),
         ),
-        onChanged: (value) {
+        // Taper entrer
+        // onEditingComplete: () {
+        //   setState(() {
+        //     textRespo;
+        //     updateValue(id, question, textRespo);
+        //     debugPrint('textRespo $id $textRespo');
+        //   });
+        // },
+        onSaved: (val) {
           setState(() {
-            debugPrint('textRespo $value');
-            textRespo = value;
+            textRespo = val;
+            updateValue(id, question, textRespo);
+            debugPrint('textRespo $id $textRespo');
           });
         },
+        // onChanged: (value) {
+        //   setState(() {
+        //     textRespo = value;
+        //     updateValue(id, question, textRespo);
+        //     debugPrint('textRespo $id $textRespo');
+        //   });
+        // },
       ),
     );
   }
 
-  Widget chackboxFieldWidget(int id) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20.0),
-    );
-  }
-
-  Widget radioFieldWidget(int id) {
+  Widget radioFieldWidget(int id, String question) {
     final List<String> conditionList = ['OUI', 'NON'];
     return Container(
-        margin: const EdgeInsets.only(bottom: 20.0),
-        child: Column(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      child: Column(
         children: conditionList
             .map((condition) => RadioListTile<String>(
                   groupValue: conditionResp,
@@ -275,8 +299,9 @@ class _ScriptingClientState extends State<ScriptingClient> {
                   value: condition,
                   onChanged: (val) {
                     setState(() {
-                      debugPrint('condition = $val');
-                      conditionResp = val;
+                      conditionResp = val!;
+                      updateValue(id, question, conditionResp);
+                      debugPrint('condition $id = $conditionResp');
                     });
                   },
                 ))
@@ -285,7 +310,7 @@ class _ScriptingClientState extends State<ScriptingClient> {
     );
   }
 
-  Widget multiRadioFieldWidget(int id, List dataList) {
+  Widget multiRadioFieldWidget(int id, String question, List dataList) {
     final List<String> multiChoises = [
       dataList[0]['multiControllerList1'],
       dataList[1]['multiControllerList2'],
@@ -293,7 +318,6 @@ class _ScriptingClientState extends State<ScriptingClient> {
       dataList[3]['multiControllerList4'],
       dataList[4]['multiControllerList5']
     ];
-
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       height: 250,
@@ -305,8 +329,9 @@ class _ScriptingClientState extends State<ScriptingClient> {
                   value: value,
                   onChanged: (val) {
                     setState(() {
-                      debugPrint('Radio = $val');
-                      multiRadioRespo = val;
+                      multiRadioRespo = val!;
+                      updateValue(id, question, multiRadioRespo);
+                      debugPrint('Radio $id = $multiRadioRespo');
                     });
                   },
                 ))
@@ -315,7 +340,7 @@ class _ScriptingClientState extends State<ScriptingClient> {
     );
   }
 
-  Widget multiCheckboxFieldWidget(int id, List dataList) {
+  Widget multiCheckboxFieldWidget(int id, String question, List dataList) {
     final List<String> multiChoises = [
       dataList[0]['multiControllerList1'],
       dataList[1]['multiControllerList2'],
@@ -324,33 +349,35 @@ class _ScriptingClientState extends State<ScriptingClient> {
       dataList[4]['multiControllerList5']
     ];
     return Container(
-      margin: const EdgeInsets.only(bottom: 20.0),
-      height: 250,
-      child: ListView.builder(
-          itemCount: multiChoises.length,
-          itemBuilder: (context, i) {
-            return ListTile(
-                title: Text(multiChoises[i]),
-                leading: Checkbox(
-                  value: multiChecked.contains(multiChoises[i]),
-                  onChanged: (val) {
-                    if (val == true) {
-                      setState(() {
-                        multiChecked.add(multiChoises[i]);
-                        debugPrint('multiChecked = $multiChecked');
-                      });
-                    } else {
-                      setState(() {
-                        multiChecked.remove(multiChoises[i]);
-                        debugPrint('multiChecked = $multiChecked');
-                      });
-                    }
-                  },
-                ));
-          }));
+        margin: const EdgeInsets.only(bottom: 20.0),
+        height: 250,
+        child: ListView.builder(
+            itemCount: multiChoises.length,
+            itemBuilder: (context, i) {
+              return ListTile(
+                  title: Text(multiChoises[i]),
+                  leading: Checkbox(
+                    value: multiChecked.contains(multiChoises[i]),
+                    onChanged: (val) {
+                      if (val == true) {
+                        setState(() {
+                          multiChecked.add(multiChoises[i]);
+                          updateValue(id, question, multiChecked);
+                          debugPrint('multiChecked $id = $multiChecked');
+                        });
+                      } else {
+                        setState(() {
+                          multiChecked.remove(multiChoises[i]);
+                          updateValue(id, question, multiChecked);
+                          debugPrint('multiChecked $id = $multiChecked');
+                        });
+                      }
+                    },
+                  ));
+            }));
   }
 
-  Widget dropdownFieldWidget(int id, List dataList) {
+  Widget dropdownFieldWidget(int id, String question, List dataList) {
     final List<String> multiChoises = [
       dataList[0]['multiControllerList1'],
       dataList[1]['multiControllerList2'],
@@ -379,15 +406,16 @@ class _ScriptingClientState extends State<ScriptingClient> {
         }).toList(),
         onChanged: (value) {
           setState(() {
-            dropdownRespo = value;
-            debugPrint('Dropdown = $value');
+            dropdownRespo = value!;
+            updateValue(id, question, dropdownRespo);
+            debugPrint('Dropdown $id = $dropdownRespo');
           });
         },
       ),
     );
   }
 
-  Widget dateTimeFieldWidget(int id) {
+  Widget dateTimeFieldWidget(int id, String question) {
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
       child: DateTimePicker(
@@ -396,8 +424,9 @@ class _ScriptingClientState extends State<ScriptingClient> {
           lastDate: DateTime(2100),
           dateLabelText: 'Date',
           onChanged: (val) {
-            debugPrint('DateTime = $val');
             dateTimeRespo = val;
+            updateValue(id, question, dateTimeRespo);
+            debugPrint('DateTime $id = $dateTimeRespo');
           },
           validator: (val) {
             return null;
@@ -445,54 +474,34 @@ class _ScriptingClientState extends State<ScriptingClient> {
     ]);
   }
 
+  updateValue(int id, String question, dynamic reponses) {
+    Map<String, dynamic> json = {
+      'id': id,
+      'question': question,
+      'reponse': reponses
+    };
+    _reponseJson.add(json);
+    print('_reponseJson $_reponseJson');
+  }
+
   Future<void> submit() async {
-    // int foundKey = -1;
-    // for (var map in _values) {
-    //   if (map.containsKey('id')) {
-    //     if (map['id'] == k) {
-    //       foundKey = k;
-    //       break;
-    //     }
-    //   }
-    // }
+    final jsonList = _reponseJson.map((item) => jsonEncode(item)).toList();
 
-    // if (-1 != foundKey) {
-    //   _values.removeWhere((map) {
-    //     return map['id'] == foundKey;
-    //   });
-    // }
+    final scriptingModel = ScriptingModel(
+      campaignName: widget.campaignModel.campaignName,
+      scripting: jsonList,
+      date: DateTime.now(),
+      role: role.toString(),
+      userName: userName.toString(),
+      superviseur: superviseur.toString(),
+    );
 
-    // final jsondecode = _values
-    //     .map((item) => jsonDecode(textControllerList[k['value']].text))
-    //     .toList();
-    // print('jsondecode $jsondecode');
-
-    // Map<String, dynamic> json = {
-    //   'value': [
-    //     {'$k': jsondecode},
-    //   ]
-    // };
-    // _values.add(json);
-    // // print('_values $_values');
-    // print('json $json');
-
-    // final jsonList = _values.map((item) => jsonEncode(item)).toList();
-
-    // final scriptingModel = ScriptingModel(
-    //   campaignName: widget.campaignModel.campaignName,
-    //   scripting: jsonList,
-    //   date: DateTime.now(),
-    //   role: role!,
-    //   userName: userName!,
-    //   superviseur: superviseur!,
-    // );
-
-    // await ScriptingRepository().insertData(scriptingModel);
-    // Navigator.of(context).pop();
-    // if (!mounted) return;
-    // ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-    //   content: Text("${scriptingModel.campaignName} ajouté!"),
-    //   backgroundColor: Colors.green[700],
-    // ));
+    await ScriptingRepository().insertData(scriptingModel);
+    Navigator.of(context).pop();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("${scriptingModel.campaignName} ajouté!"),
+      backgroundColor: Colors.green[700],
+    ));
   }
 }

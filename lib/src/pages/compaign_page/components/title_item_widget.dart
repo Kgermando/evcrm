@@ -1,7 +1,9 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart';
 import 'package:crm_spx/src/models/campaign_model.dart';
+import 'package:crm_spx/src/models/user_model.dart';
 import 'package:crm_spx/src/provider/theme_provider.dart';
+import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:flutter/material.dart';
 
 class TitleItemWidget extends StatefulWidget {
@@ -14,19 +16,31 @@ class TitleItemWidget extends StatefulWidget {
 }
 
 class _TitleItemWidgetState extends State<TitleItemWidget> {
-  final title = TextEditingController();
-  final subTitle = TextEditingController();
+  String? title;
+  String? subTitle;
 
   @override
   void initState() {
+    userPrefs();
     super.initState();
   }
 
   @override
   void dispose() {
-    title.dispose();
-    subTitle.dispose();
     super.dispose();
+  }
+
+  String? userName;
+  String? role;
+  String? superviseur;
+
+  void userPrefs() async {
+    User user = await UserPreferences.read();
+    setState(() {
+      userName = user.userName;
+      role = user.role;
+      superviseur = user.superviseur;
+    });
   }
 
   @override
@@ -41,7 +55,7 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
               padding: const EdgeInsets.only(bottom: 2.0),
               child: AutoSizeText(
                 (widget.campaignModel.title == '')
-                    ? title.text
+                    ? title.toString()
                     : widget.campaignModel.title,
                 maxLines: 3,
                 style: headline5!.copyWith(
@@ -55,7 +69,7 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
               padding: const EdgeInsets.only(bottom: 20.0),
               child: AutoSizeText(
                 (widget.campaignModel.subTitle == '')
-                    ? subTitle.text
+                    ? subTitle.toString()
                     : widget.campaignModel.subTitle,
                 textAlign: TextAlign.center,
                 maxLines: 5,
@@ -66,7 +80,6 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
           ],
         ),
         TextFormField(
-          controller: title,
           maxLength: 50,
           decoration: InputDecoration(
             labelText: 'Titre du scripting',
@@ -77,9 +90,7 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
           ),
           onChanged: (value) {
             setState(() {
-              title.text = value;
-              title.selection = TextSelection.fromPosition(
-                  TextPosition(offset: title.text.length));
+              title = value;
               updateCampaign();
             });
           },
@@ -88,7 +99,6 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
           height: 10.0,
         ),
         TextFormField(
-          controller: subTitle,
           maxLength: 150,
           decoration: InputDecoration(
             labelText: 'Description',
@@ -99,9 +109,7 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
           ),
           onChanged: (value) {
             setState(() {
-              subTitle.text = value;
-              subTitle.selection = TextSelection.fromPosition(
-                  TextPosition(offset: subTitle.text.length));
+              subTitle = value;
               updateCampaign();
             });
           },
@@ -112,15 +120,14 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
 
   Future<void> updateCampaign() async {
     final campaignModel = CampaignModel(
-      id: widget.campaignModel.id,
-      campaignName: widget.campaignModel.campaignName,
-      scripting: [],
-      title: title.text,
-      subTitle: subTitle.text,
-      date: widget.campaignModel.date,
-      userName: 'Admin',
-      superviseur: ''
-    );
+        id: widget.campaignModel.id,
+        campaignName: widget.campaignModel.campaignName,
+        scripting: [],
+        title: title.toString(),
+        subTitle: subTitle.toString(),
+        date: widget.campaignModel.date,
+        userName: userName!,
+        superviseur: superviseur!);
 
     await CampaignRepository().updateData(campaignModel);
     // Navigator.of(context).pop();

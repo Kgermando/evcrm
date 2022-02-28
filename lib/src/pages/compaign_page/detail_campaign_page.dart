@@ -119,7 +119,7 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
             const SizedBox(
               height: 20.0,
             ),
-            // campaignListWidget()
+            campaignListWidget()
           ],
         ),
       ),
@@ -213,11 +213,11 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
         });
       });
 
-  campaignListWidget() {
+  Widget campaignListWidget() {
     final bodyText1 = Theme.of(context).textTheme.bodyText1;
-    final scripting = widget.campaignModel.scripting;
+
     scriptingList.map((e) {
-        return SizedBox(
+      return SizedBox(
         width: double.infinity,
         child: Card(
           child: DataTable2(
@@ -228,19 +228,15 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
             columns: const [
               DataColumn(
                 label: Text("DATE",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
               ),
-              // DataColumn2(
-              //   size: ColumnSize.L,
-              //   label: Text("Q ${s['id'] + 1}.",
-              //       style: const TextStyle(
-              //           fontWeight: FontWeight.w600, fontSize: 16)),
-              // ),
-              // DataColumn(
-              //   label: Text(s['value'][0]['question'],
-              //       style: const TextStyle(
-              //           fontWeight: FontWeight.w600, fontSize: 16)),
-              // ),
+              DataColumn2(
+                size: ColumnSize.L,
+                label: Text("Q .",
+                    style:
+                        TextStyle(fontWeight: FontWeight.w600, fontSize: 16)),
+              ),
             ],
             rows: List.generate(
               e.scripting.length,
@@ -250,6 +246,7 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
         ),
       );
     });
+    return Container();
   }
 
   //  Data Table
@@ -259,9 +256,9 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
         DataCell(
           Text(DateFormat("dd.MM.yy").format(s['date'])),
         ),
-        // DataCell(
-        //   Text(scriptingModel.shift),
-        // ),
+        DataCell(
+          Text(s[2]['reponse']),
+        ),
         // DataCell(
         //   Text(fakeModel.telephone),
         // ),

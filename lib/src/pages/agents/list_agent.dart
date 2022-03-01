@@ -8,8 +8,8 @@ import 'package:crm_spx/src/pages/agents/add_agent.dart';
 import 'package:crm_spx/src/pages/agents/detail_agent.dart';
 import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:crm_spx/src/widgets/search_widget.dart';
-import 'package:data_table_2/paginated_data_table_2.dart';
 import 'package:flutter/material.dart';
+import 'package:data_table_2/data_table_2.dart';
 
 class ListAgent extends StatefulWidget {
   const ListAgent({Key? key}) : super(key: key);

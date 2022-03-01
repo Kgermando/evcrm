@@ -261,14 +261,6 @@ class _ScriptingClientState extends State<ScriptingClient> {
             borderRadius: BorderRadius.circular(5.0),
           ),
         ),
-        // Taper entrer
-        // onEditingComplete: () {
-        //   setState(() {
-        //     textRespo;
-        //     updateValue(id, question, textRespo);
-        //     debugPrint('textRespo $id $textRespo');
-        //   });
-        // },
         onSaved: (val) {
           setState(() {
             textRespo = val;

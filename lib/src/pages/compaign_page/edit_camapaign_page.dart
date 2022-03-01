@@ -6,7 +6,6 @@ import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart
 import 'package:crm_spx/src/models/campaign_model.dart';
 import 'package:crm_spx/src/models/user_model.dart';
 import 'package:crm_spx/src/pages/compaign_page/components/title_item_widget.dart';
-import 'package:crm_spx/src/scripting_Widget/check_box_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/date_time_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/dropdown_item_widget.dart';
 import 'package:crm_spx/src/scripting_Widget/multi_checkbox_item_widget.dart';

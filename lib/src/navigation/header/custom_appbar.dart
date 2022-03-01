@@ -62,7 +62,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
               onTap: () {},
               child: Badge(
                 badgeColor: Colors.red,
-                badgeContent: const Text('38', style: TextStyle(color: Colors.white),),
+                badgeContent: const Text('38', style: TextStyle(color: Colors.white, fontSize: 8),),
                 child: const Icon(Icons.notifications),
               ),
             ),
@@ -71,7 +71,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
               onTap: () {},
               child: Badge(
                 badgeColor: Colors.blue,
-                badgeContent: const Text('99', style: TextStyle(color: Colors.white),),
+                badgeContent: const Text('99', style: TextStyle(color: Colors.white, fontSize: 8),),
                 child: const Icon(Icons.call),
               ),
             ),
@@ -82,7 +82,7 @@ class _CustomAppbarState extends State<CustomAppbar> {
               onTap: () {},
               child: Badge(
                 badgeColor: Colors.green,
-                badgeContent: const Text('56' , style: TextStyle(color: Colors.white),),
+                badgeContent: const Text('56' , style: TextStyle(color: Colors.white, fontSize: 8),),
                 child: const Icon(Icons.mail),
               ),
             ),

@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crm_spx/src/global/api.dart';
 import 'package:crm_spx/src/global/handler.dart';
 import 'package:crm_spx/src/models/agenda_model.dart';
+import 'package:crm_spx/src/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AgendaRepository with ChangeNotifier {
   final String table = "agendas";
@@ -41,9 +44,45 @@ class AgendaRepository with ChangeNotifier {
 
       var querySQL = "SELECT * FROM $table ORDER BY \"number\" ASC; ";
 
-      List<List<dynamic>> results = await connection.query(querySQL);
-      for (var row in results) {
-        data.add(AgendaModel.fromSQL(row));
+      var _keyUser = 'tokenKey';
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_keyUser);
+
+      if (json != null) {
+        User user = User.fromJson(jsonDecode(json));
+        String userName = user.userName;
+        String role = user.role;
+        String superviseur = user.superviseur;
+
+        if (role == 'Admin') {
+          var querySQL =
+              "SELECT * FROM $table  ORDER BY \"number\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AgendaModel.fromSQL(row));
+          }
+        } else if (role == 'Superviseur') {
+          var querySQL =
+              "SELECT * FROM $table WHERE \"superviseur\"='$superviseur' ORDER BY \"number\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AgendaModel.fromSQL(row));
+          }
+        } else if (role == 'Agent') {
+          var querySQL =
+              "SELECT * FROM $table WHERE \"userName\"='$userName' ORDER BY \"number\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AgendaModel.fromSQL(row));
+          }
+        } else if (role == 'SuperAdmin') {
+          var querySQL =
+              "SELECT * FROM $table ORDER BY \"number\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AgendaModel.fromSQL(row));
+          }
+        }
       }
 
       await closeConnection(connection);

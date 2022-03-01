@@ -188,18 +188,18 @@ class _DrawerMenuState extends State<DrawerMenu> {
                 }
               },
             ),
-            DrawerListTile(
-              title: 'Reporting',
-              icon: Icons.desktop_windows,
-              active: appProvider.currentPage == DisplayPage.annuaire,
-              tap: () {
-                appProvider.changeCurrentPage(DisplayPage.annuaire);
-                locator<NavigationService>().navigateTo(annuaireRoute);
-                if (!Responsive.isDesktop(context)) {
-                  Navigator.of(context).pop();
-                }
-              },
-            ),
+            // DrawerListTile(
+            //   title: 'Reporting',
+            //   icon: Icons.desktop_windows,
+            //   active: appProvider.currentPage == DisplayPage.annuaire,
+            //   tap: () {
+            //     appProvider.changeCurrentPage(DisplayPage.annuaire);
+            //     locator<NavigationService>().navigateTo(annuaireRoute);
+            //     if (!Responsive.isDesktop(context)) {
+            //       Navigator.of(context).pop();
+            //     }
+            //   },
+            // ),
             DrawerListTile(
               title: 'Users',
               icon: Icons.people,

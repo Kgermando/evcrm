@@ -4,8 +4,7 @@ class Role {
     'SuperAdmin',
     'Admin',
     'Superviseur',
-    'Agent',
-    'Client'
+    'Agent'
   ];
 
   List<String> roleGstionnaire = [

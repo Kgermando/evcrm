@@ -1,10 +1,13 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:crm_spx/src/global/api.dart';
 import 'package:crm_spx/src/global/handler.dart';
 import 'package:crm_spx/src/models/annuaire_model.dart';
+import 'package:crm_spx/src/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:postgres/postgres.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AnnuaireRepository with ChangeNotifier {
   final String table = 'annuaire';
@@ -27,7 +30,7 @@ class AnnuaireRepository with ChangeNotifier {
           "nomEntreprise" VARCHAR,
           "grade" VARCHAR,
           "adresseEntreprise" VARCHAR,
-          "telephone" VARCHAR NOT NULL,
+          "userName" VARCHAR NOT NULL,
           "superviseur" VARCHAR NOT NULL,
           "campaign" VARCHAR NOT NULL
       );
@@ -43,12 +46,43 @@ class AnnuaireRepository with ChangeNotifier {
       PostgreSQLConnection connection = await openConnection();
       var data = <AnnuaireModel>{};
 
-      var querySQL =
-          " SELECT * FROM $table ORDER BY \"nomPostnomPrenom\" ASC; ";
+      var _keyUser = 'tokenKey';
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_keyUser);
 
-      List<List<dynamic>> results = await connection.query(querySQL);
-      for (var row in results) {
-        data.add(AnnuaireModel.fromSQL(row));
+      if (json != null) {
+        User user = User.fromJson(jsonDecode(json));
+        String userName = user.userName;
+        String role = user.role;
+        String superviseur = user.superviseur;
+
+        if (role == 'Admin') {
+          var querySQL = "SELECT * FROM $table  ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        } else if (role == 'Superviseur') {
+          var querySQL =
+              "SELECT * FROM $table WHERE \"superviseur\"='$superviseur'  ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        } else if (role == 'Agent') {
+          var querySQL =
+              "SELECT * FROM $table WHERE \"userName\"='$userName' ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        } else if (role == 'SuperAdmin') {
+          var querySQL = "SELECT * FROM $table ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        }
       }
 
       await closeConnection(connection);
@@ -64,12 +98,45 @@ class AnnuaireRepository with ChangeNotifier {
       PostgreSQLConnection connection = await openConnection();
       var data = <AnnuaireModel>{};
 
-      var querySQL =
-          " SELECT * FROM $table ORDER BY \"nomPostnomPrenom\" ASC; ";
+      var _keyUser = 'tokenKey';
+      final prefs = await SharedPreferences.getInstance();
+      final json = prefs.getString(_keyUser);
 
-      List<List<dynamic>> results = await connection.query(querySQL);
-      for (var row in results) {
-        data.add(AnnuaireModel.fromSQL(row));
+      if (json != null) {
+        User user = User.fromJson(jsonDecode(json));
+        String userName = user.userName;
+        String role = user.role;
+        String superviseur = user.superviseur;
+
+        if (role == 'Admin') {
+          var querySQL =
+              "SELECT * FROM $table  ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        } else if (role == 'Superviseur') {
+          var querySQL =
+              "SELECT * FROM $table WHERE \"superviseur\"='$superviseur'  ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        } else if (role == 'Agent') {
+          var querySQL =
+              "SELECT * FROM $table WHERE \"userName\"='$userName' ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        } else if (role == 'SuperAdmin') {
+          var querySQL =
+              "SELECT * FROM $table ORDER BY \"nomPostnomPrenom\" ASC;";
+          List<List<dynamic>> results = await connection.query(querySQL);
+          for (var row in results) {
+            data.add(AnnuaireModel.fromSQL(row));
+          }
+        }
       }
 
       await closeConnection(connection);

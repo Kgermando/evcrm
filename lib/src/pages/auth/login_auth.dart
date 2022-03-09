@@ -2,7 +2,6 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:crm_spx/src/constants/responsive.dart';
 import 'package:crm_spx/src/global/repository/users/user_repository.dart';
 import 'package:crm_spx/src/models/user_model.dart';
-import 'package:crm_spx/src/navigation/layouts/layouts.dart';
 import 'package:crm_spx/src/provider/theme_provider.dart';
 import 'package:crm_spx/src/utils/loading.dart';
 import 'package:crm_spx/src/utils/regex.dart';

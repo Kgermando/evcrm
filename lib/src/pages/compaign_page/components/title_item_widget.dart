@@ -16,8 +16,8 @@ class TitleItemWidget extends StatefulWidget {
 }
 
 class _TitleItemWidgetState extends State<TitleItemWidget> {
-  String? title;
-  String? subTitle;
+  String title = 'Titre';
+  String subTitle = 'Description';
 
   @override
   void initState() {
@@ -59,10 +59,7 @@ class _TitleItemWidgetState extends State<TitleItemWidget> {
                     : widget.campaignModel.title,
                 maxLines: 3,
                 style: headline5!.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: ThemeProvider().isDarkMode
-                        ? Colors.white
-                        : Colors.black),
+                    fontWeight: FontWeight.bold),
               ),
             ),
             Container(

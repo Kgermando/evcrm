@@ -46,7 +46,6 @@ dependencies:
 
   # Widget complementaire
   shared_preferences: ^2.0.12
-  flutter_arc_speed_dial: ^2.0.0
   flutter_typeahead2: ^3.2.1
   auto_size_text: ^3.0.0
   timeago: ^3.1.0

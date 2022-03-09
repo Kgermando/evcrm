@@ -5,6 +5,7 @@ import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart
 import 'package:crm_spx/src/global/repository/superviseur/superviseur_repository.dart';
 import 'package:crm_spx/src/models/campaign_model.dart';
 import 'package:crm_spx/src/models/superviseur_model.dart';
+import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:crm_spx/src/utils/loading.dart';
 import 'package:crm_spx/src/constants/responsive.dart';
 import 'package:crm_spx/src/navigation/header/custom_appbar.dart';
@@ -67,6 +68,7 @@ class _ListCampaignPageState extends State<ListCampaignPage> {
         loadData();
       });
     });
+    userPrefs();
   }
 
   @override
@@ -94,11 +96,21 @@ class _ListCampaignPageState extends State<ListCampaignPage> {
     });
   }
 
+  String? role;
+
+  Future userPrefs() async {
+    var user = await UserPreferences.read();
+    if (!mounted) return;
+    setState(() {
+      role = user.role;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final headline6 = Theme.of(context).textTheme.headline6;
     return Scaffold(
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: (role == 'SuperAdmin' || role == 'Admin') ? FloatingActionButton(
           // backgroundColor: Colors.teal,
           foregroundColor: Colors.white,
           tooltip: 'Ajoutez une nouvelle campaign',
@@ -108,11 +120,15 @@ class _ListCampaignPageState extends State<ListCampaignPage> {
                 // isDismissible: false,
                 context: context,
                 builder: (context) => Container(
-                  margin: const EdgeInsets.all(20.0),
-                  child: buildSheet()));
+                    margin: const EdgeInsets.all(20.0), child: buildSheet()));
           },
-          child: const Icon(Icons.add),
-        ),
+          child: Row(
+            children: const [
+              Icon(Icons.add),
+              Icon(Icons.campaign),
+            ],
+          ),
+        ) : Container(),
         body: Column(
           children: [
             const CustomAppbar(title: 'Campaigns'),
@@ -233,9 +249,6 @@ class _ListCampaignPageState extends State<ListCampaignPage> {
         child: ListView(
           children: [
             titleField(context, 'New campaign'),
-            const SizedBox(
-              height: 20.0,
-            ),
             TextFormField(
               controller: nameController,
               maxLength: 150,
@@ -257,17 +270,14 @@ class _ListCampaignPageState extends State<ListCampaignPage> {
                 });
               },
             ),
-            const SizedBox(
-              height: 20.0,
-            ),
             superviseurField(),
             const SizedBox(
               height: 20.0,
             ),
             ElevatedButton(
-              style: ButtonStyle(
-                foregroundColor: MaterialStateProperty.all(Colors.teal),
-              ),
+                style: ButtonStyle(
+                  foregroundColor: MaterialStateProperty.all(Colors.teal),
+                ),
                 onPressed: () {
                   var form = _form.currentState!;
                   if (form.validate()) {

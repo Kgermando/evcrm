@@ -111,8 +111,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
       onPressed: () => showDialog<String>(
         context: context,
         builder: (BuildContext context) => const AlertDialog(
-            title: Text('Business Management'),
-            content: Text('Version: 2.0.1+2 \nDate: 01-12-2021')),
+            title: Text('CRM Sunphenix'),
+            content: Text('Version: 2.0.1+2 \nDate: 09-03-2022')),
       ),
     );
   }

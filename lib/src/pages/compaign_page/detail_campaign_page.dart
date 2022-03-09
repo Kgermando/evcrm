@@ -23,7 +23,6 @@ class DetailCampaignPage extends StatefulWidget {
 }
 
 class _DetailCampaignPageState extends State<DetailCampaignPage> {
-  final ScrollController _controllerTwo = ScrollController();
   bool isLoading = false;
   Timer? debouncer;
   String query = '';
@@ -32,7 +31,7 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
 
   @override
   void initState() {
-    Timer.periodic(const Duration(seconds: 1), ((timer) {
+    Timer.periodic(const Duration(milliseconds: 500), ((timer) {
       searchAchat(query);
       getData();
       timer.cancel();
@@ -70,12 +69,9 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
   }
 
   Future getData() async {
-    final scripting = await ScriptingRepository().getAllDataSearch(query);
+    final scripting = await ScriptingRepository().getAllData();
     setState(() {
-      scriptingList = scripting
-          .where((element) =>
-              element.campaignName == widget.campaignModel.campaignName)
-          .toList();
+      scriptingList = scripting;
     });
   }
 
@@ -86,17 +82,19 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
       appBar: AppBar(
         title: Text(widget.campaignModel.campaignName),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) =>
-                      ScriptingClient(campaignModel: widget.campaignModel)));
-        },
-        child: const Icon(Icons.add),
-      ),
-      body: Padding(
+      floatingActionButton: (scripting.isNotEmpty)
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ScriptingClient(
+                            campaignModel: widget.campaignModel)));
+              },
+              child: const Icon(Icons.add),
+            )
+          : Container(),
+      body: SingleChildScrollView(
         padding: const EdgeInsets.only(right: 20.0, bottom: 20.0),
         child: Column(
           children: [
@@ -175,9 +173,9 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
             const SizedBox(
               height: 20.0,
             ),
-            (scripting.isEmpty) 
-            ? const Text("Generer un nouveau scripting") 
-            : tableScriptingWidget(),
+            (scripting.isEmpty)
+                ? const Text("Generer un nouveau scripting")
+                : tableScriptingWidget(),
             const SizedBox(
               height: 20.0,
             ),
@@ -275,47 +273,49 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
         });
       });
 
-  tableScripting() {
-    final scripting = widget.campaignModel.scripting;
-    return Expanded(
-      child: Scrollbar(
-        controller: _controllerTwo,
-        child: ListView.builder(
-            controller: _controllerTwo,
-            // scrollDirection: Axis.horizontal,
-            itemCount: scripting.length,
-            itemBuilder: (BuildContext context, index) {
-              final s = scripting[index];
-              return tableScriptingWidget();
-            }),
-      ),
-    );
-  }
-
   tableScriptingWidget() {
     final bodyText1 = Theme.of(context).textTheme.bodyText1;
     final scripting = widget.campaignModel.scripting;
-    final reponses = scriptingList.map((e) => e.scripting).toList();
+    final reponses = scriptingList
+        .where((element) =>
+            element.campaignName == widget.campaignModel.campaignName)
+        .toList()
+        .map((e) => e.scripting)
+        .toList();
+    // print('reponses $reponses');
     return SizedBox(
       width: double.infinity,
-      child: DataTable2(
-        minWidth: 600,
-        empty: Text('Pas encore de scripting', style: bodyText1),
-        columns: [
-          for (var s in scripting)
+      child: Card(
+        elevation: 10.0,
+        child: DataTable2(
+          minWidth: 600,
+          border: TableBorder.all(),
+          empty: Text('Pas encore de scripting', style: bodyText1),
+          columns: [
             DataColumn2(
-              size: ColumnSize.L,
+              size: ColumnSize.S,
               label: AutoSizeText(
-                "Q ${s['id'] + 1}. ${s['value'][0]['question']}",
+                "N°",
                 maxLines: 2,
                 textAlign: TextAlign.left,
                 style: bodyText1!.copyWith(fontWeight: FontWeight.bold),
               ),
             ),
-        ],
-        rows: List.generate(
-          reponses.length,
-          (index) => recentFileDataRow(reponses[index]),
+            for (var s in scripting)
+              DataColumn2(
+                size: ColumnSize.L,
+                label: AutoSizeText(
+                  "Q ${s['id'] + 1}. ${s['value'][0]['question']}",
+                  maxLines: 2,
+                  textAlign: TextAlign.left,
+                  style: bodyText1.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ),
+          ],
+          rows: List.generate(
+            reponses.length,
+            (index) => recentFileDataRow(reponses[index]),
+          ),
         ),
       ),
     );
@@ -324,23 +324,38 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
   //  Data Table
   DataRow recentFileDataRow(reponse) {
     final bodyText2 = Theme.of(context).textTheme.bodyText2;
-    final scripting = widget.campaignModel.scripting;
+    final scriptingCampaign = widget.campaignModel.scripting;
+    final reponses = scriptingList
+        .where((element) =>
+            element.campaignName == widget.campaignModel.campaignName)
+        .toList()
+        .map((e) => e.scripting)
+        .toList();
 
-    int? numberQuestion;
-    for (var item in scripting) {
+    int numberQuestion = 0;
+    for (var item in scriptingCampaign) {
       numberQuestion = item['id'] + 1;
     }
 
-    print('numberQuestion $numberQuestion');
+    int n = 1;
+
+    // print('numberQuestion $numberQuestion');
     return DataRow(
       cells: [
-        for (var i = 0; i < numberQuestion!; i++)
-          DataCell(
-            Text(reponse[i]['reponse'], style: bodyText2),
-          ),
-        // DataCell(
-        //   Text(reponse[1]['reponse'], style: bodyText2),
-        // ),
+        DataCell(
+          Text('${n++}', style: bodyText2),
+        ),
+        if (reponses.isNotEmpty)
+          for (var i = 0; i < numberQuestion; i++)
+            DataCell(
+              Text(reponse[i]['reponse'], style: bodyText2),
+            ),
+
+        if (reponses.isEmpty)
+          for (var i = 0; i < numberQuestion; i++)
+            DataCell(
+              Text('', style: bodyText2),
+            ),
         // DataCell(
         //   Text(reponse[2]['reponse'], style: bodyText2),
         // ),

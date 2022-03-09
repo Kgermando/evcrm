@@ -8,6 +8,7 @@ import 'package:crm_spx/src/global/repository/scripting/scripting_repository.dar
 import 'package:crm_spx/src/models/campaign_model.dart';
 import 'package:crm_spx/src/models/scripting_model.dart';
 import 'package:crm_spx/src/models/user_model.dart';
+import 'package:crm_spx/src/pages/compaign_page/list_campaign_page.dart';
 import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:crm_spx/src/utils/loading.dart';
 import 'package:date_time_picker/date_time_picker.dart';
@@ -29,20 +30,19 @@ class _ScriptingClientState extends State<ScriptingClient> {
   // final ScrollController _controllerTwo = ScrollController();
   bool isloading = false;
   List<CampaignModel> listCampaign = [];
-
   late List<Map<String, dynamic>> _reponseJson;
 
-  // List<String> textRespoList = [];
-  // List<String> dateTimeRespoList = [];
-  // List<String> multiRadioRespoList = []; // Multi Radio
-  // List<String> dropdownRespoList = []; // Dropdown
-  // List<String> conditionRespList = [];
+  bool showCard = false; // Pour condition Widget
+  bool showCard1 = false;
+  bool showCard2 = false;
+  bool showCard3 = false;
+
   String? textRespo;
   String? dateTimeRespo;
   String? multiRadioRespo;
   String? dropdownRespo;
   List<String> multiChecked = []; // Multi checkbox
-  String? conditionResp;
+  String conditionResp = "";
 
   @override
   void initState() {
@@ -171,10 +171,12 @@ class _ScriptingClientState extends State<ScriptingClient> {
     final scripting = widget.campaignModel.scripting;
     return Expanded(
       child: ListView.builder(
-          // controller: _controllerTwo,
           itemCount: scripting.length,
           itemBuilder: (BuildContext context, index) {
             final s = scripting[index];
+            if (s['value'][2]['condition'][0]['qOui'] == " " &&
+                s['value'][2]['condition'][1]['qNon'] == " ") {
+            } else {}
             return logicScriptingWidget(s);
           }),
     );
@@ -184,102 +186,99 @@ class _ScriptingClientState extends State<ScriptingClient> {
     final headline6 = Theme.of(context).textTheme.headline6;
     // debugPrint('qOui ${s['value'][2]['condition'][0]['qOui']}');
     // debugPrint('qNon ${s['value'][2]['condition'][1]['qNon']}');
-    // if (conditionResp == 'OUI')
-    return Card(
-      elevation: 10,
-      child: Container(
-          padding: const EdgeInsets.all(20.0),
-          decoration: const BoxDecoration(
-              border: Border(
-            left: BorderSide(color: Colors.teal, width: 15),
-          )),
-          child: Column(
-            children: [
-              // for (var item in items)
-              Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: AutoSizeText(
-                      'Q ${s['id'] + 1}.',
-                      maxLines: 2,
-                      textAlign: TextAlign.left,
-                      style: headline6!.copyWith(fontWeight: FontWeight.bold),
+
+    var ouiS = s['value'][2]['condition'][0]['qOui']; // ID ecrit par l"admin
+    var nonS = s['value'][2]['condition'][1]['qNon']; // ID ecrit par l"admin
+
+    int idCard = s['id'];
+    var widgetCard = s['value'][1]['typeWidget'] == 'Condition';
+
+    print('idCard $idCard');
+
+    bool idCard0 = s['value'][2]['condition'][0]['qOui'] == "" &&
+        s['value'][2]['condition'][1]['qNon'] == "";
+
+    print('conditionResp $conditionResp');
+
+    if (idCard0) {
+      
+    } else if(widgetCard) {
+      if (conditionResp == "OUI") {
+        
+      } else if(conditionResp == "NON") {
+        
+      }
+    } 
+
+    return Column(
+      children: [
+        if (idCard0)
+          Card(
+            elevation: 10,
+            child: Container(
+                padding: const EdgeInsets.all(20.0),
+                decoration: const BoxDecoration(
+                    border: Border(
+                  left: BorderSide(color: Colors.teal, width: 15),
+                )),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: AutoSizeText(
+                            'Q ${s['id'] + 1}.',
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                            style: headline6!
+                                .copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 20.0,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.only(bottom: 20.0),
+                          child: AutoSizeText(
+                            s['value'][0]['question'],
+                            maxLines: 2,
+                            textAlign: TextAlign.left,
+                            style:
+                                headline6.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20.0,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(bottom: 20.0),
-                    child: AutoSizeText(
-                      s['value'][0]['question'],
-                      maxLines: 2,
-                      textAlign: TextAlign.left,
-                      style: headline6.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                ],
-              ),
-              if (s['value'][1]['typeWidget'] == 'Text')
-                textFormFieldWidget(s['id'], s['value'][0]['question']),
-
-              // if(s['value'][2]['condition'][0]['qOui'] == ' ' && s['value'][2]['condition'][1]['qNon'] == ' ')
-
-              if (s['value'][1]['typeWidget'] == 'Condition')
-                radioFieldWidget(s['id'], s['value'][0]['question']),
-
-              if (s['value'][1]['typeWidget'] == 'MultiRadio')
-                multiRadioFieldWidget(s['id'], s['value'][0]['question'],
-                    s['value'][3]['multiChoice']),
-
-              if (s['value'][1]['typeWidget'] == 'MultiCheckBox')
-                multiCheckboxFieldWidget(s['id'], s['value'][0]['question'],
-                    s['value'][3]['multiChoice']),
-
-              if (s['value'][1]['typeWidget'] == 'Dropdown')
-                dropdownFieldWidget(s['id'], s['value'][0]['question'],
-                    s['value'][3]['multiChoice']),
-
-              if (s['value'][1]['typeWidget'] == 'DateTIme')
-                dateTimeFieldWidget(s['id'], s['value'][0]['question']),
-            ],
-          )),
-    );
-  }
-
-  Widget textFormFieldWidget(int id, String question) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20.0),
-      child: TextFormField(
-        keyboardType: TextInputType.text,
-        decoration: InputDecoration(
-          labelText: 'Réponse',
-          labelStyle: const TextStyle(),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(5.0),
+                    if (s['value'][1]['typeWidget'] == 'Text')
+                      textFormFieldWidget(s['id'], s['value'][0]['question']),
+                    if (s['value'][1]['typeWidget'] == 'Condition')
+                      radioFieldWidget(
+                          s['id'],
+                          s['value'][0]['question'],
+                          s['value'][2]['condition'][0]['qOui'],
+                          s['value'][2]['condition'][1]['qNon']),
+                    if (s['value'][1]['typeWidget'] == 'MultiRadio')
+                      multiRadioFieldWidget(s['id'], s['value'][0]['question'],
+                          s['value'][3]['multiChoice']),
+                    if (s['value'][1]['typeWidget'] == 'MultiCheckBox')
+                      multiCheckboxFieldWidget(
+                          s['id'],
+                          s['value'][0]['question'],
+                          s['value'][3]['multiChoice']),
+                    if (s['value'][1]['typeWidget'] == 'Dropdown')
+                      dropdownFieldWidget(s['id'], s['value'][0]['question'],
+                          s['value'][3]['multiChoice']),
+                    if (s['value'][1]['typeWidget'] == 'DateTIme')
+                      dateTimeFieldWidget(s['id'], s['value'][0]['question']),
+                  ],
+                )),
           ),
-        ),
-        onSaved: (val) {
-          setState(() {
-            textRespo = val;
-            updateValue(id, question, textRespo);
-            debugPrint('textRespo $id $textRespo');
-          });
-        },
-        // onChanged: (value) {
-        //   setState(() {
-        //     textRespo = value;
-        //     updateValue(id, question, textRespo);
-        //     debugPrint('textRespo $id $textRespo');
-        //   });
-        // },
-      ),
+      ],
     );
   }
 
-  Widget radioFieldWidget(int id, String question) {
+  Widget radioFieldWidget(int id, String question, String qOUI, String qNON) {
     final List<String> conditionList = ['OUI', 'NON'];
     return Container(
       margin: const EdgeInsets.only(bottom: 20.0),
@@ -291,14 +290,70 @@ class _ScriptingClientState extends State<ScriptingClient> {
                   value: condition,
                   onChanged: (val) {
                     setState(() {
-                      conditionResp = val!;
+                      conditionResp = (val == '' || val == null) ? '-' : val;
                       updateValue(id, question, conditionResp);
                       debugPrint('condition $id = $conditionResp');
+
+                      int oui = int.parse(qOUI);
+                      int non = int.parse(qNON);
+                      print('oui $oui');
+                      print('non $non');
+
+                      if (conditionResp == "") {
+                        showCard1 = qOUI == "" && qNON == "";
+                      } else if (conditionResp == "OUI") {
+                        qOUI == "" && qNON == "" && oui == id;
+                      } else if (conditionResp == "NON") {
+                        qOUI == "" && qNON == "" && non == id;
+                      }
+
+                      // switch (conditionResp) {
+                      //   case 'OUI':
+                      //     {
+                      //       showCard = true;
+                      //       id;
+                      //     }
+                      //     break;
+
+                      //   case 'NON':
+                      //     {
+                      //       //statements;
+                      //     }
+                      //     break;
+
+                      //   default:
+                      //     {
+                      //       //statements;
+                      //     }
+                      //     break;
+                      // }
                     });
                   },
                 ))
             .toList(),
       ),
+    );
+  }
+
+  Widget textFormFieldWidget(int id, String question) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 20.0),
+      child: TextFormField(
+          keyboardType: TextInputType.text,
+          decoration: InputDecoration(
+            labelText: 'Réponse',
+            labelStyle: const TextStyle(),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+          ),
+          onSaved: (val) {
+            setState(() {
+              textRespo = (val == '' || val == null) ? '-' : val;
+              updateValue(id, question, textRespo);
+              debugPrint('textRespo $id $textRespo');
+            });
+          }),
     );
   }
 
@@ -321,7 +376,7 @@ class _ScriptingClientState extends State<ScriptingClient> {
                   value: value,
                   onChanged: (val) {
                     setState(() {
-                      multiRadioRespo = val!;
+                      multiRadioRespo = (val == '' || val == null) ? '-' : val;
                       updateValue(id, question, multiRadioRespo);
                       debugPrint('Radio $id = $multiRadioRespo');
                     });
@@ -396,9 +451,9 @@ class _ScriptingClientState extends State<ScriptingClient> {
             child: Text(value),
           );
         }).toList(),
-        onChanged: (value) {
+        onChanged: (val) {
           setState(() {
-            dropdownRespo = value!;
+            dropdownRespo = (val == '' || val == null) ? '-' : val;
             updateValue(id, question, dropdownRespo);
             debugPrint('Dropdown $id = $dropdownRespo');
           });
@@ -416,7 +471,7 @@ class _ScriptingClientState extends State<ScriptingClient> {
           lastDate: DateTime(2100),
           dateLabelText: 'Date',
           onChanged: (val) {
-            dateTimeRespo = val;
+            dateTimeRespo = (val == '') ? '-' : val;
             updateValue(id, question, dateTimeRespo);
             debugPrint('DateTime $id = $dateTimeRespo');
           },
@@ -489,10 +544,11 @@ class _ScriptingClientState extends State<ScriptingClient> {
     );
 
     await ScriptingRepository().insertData(scriptingModel);
-    Navigator.of(context).pop();
+    Navigator.of(context).push(
+        MaterialPageRoute(builder: ((context) => const ListCampaignPage())));
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("${scriptingModel.campaignName} ajouté!"),
+      content: const Text("Donnée ajouté!"),
       backgroundColor: Colors.green[700],
     ));
   }

@@ -42,8 +42,6 @@ class AgendaRepository with ChangeNotifier {
 
       var data = <AgendaModel>{};
 
-      var querySQL = "SELECT * FROM $table ORDER BY \"number\" ASC; ";
-
       var _keyUser = 'tokenKey';
       final prefs = await SharedPreferences.getInstance();
       final json = prefs.getString(_keyUser);

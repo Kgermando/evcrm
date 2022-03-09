@@ -38,6 +38,7 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
   late List<Map<String, dynamic>> valuesMulti;
 
   bool isloading = false;
+  bool isVisible = true;
 
   final ScrollController _controllerTwo = ScrollController();
 
@@ -73,6 +74,8 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
     countMulti = 1;
     resultMulti = '';
     valuesMulti = [];
+
+    userPrefs();
   }
 
   @override
@@ -105,7 +108,6 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
     super.dispose();
   }
 
-
   String? userName;
   String? role;
   String? superviseur;
@@ -118,7 +120,6 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
       superviseur = user.superviseur;
     });
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -198,7 +199,8 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           SizedBox(
-            width: Responsive.isDesktop(context) ? size.width / 1.5 : size.width,
+            width:
+                Responsive.isDesktop(context) ? size.width / 1.5 : size.width,
             child: ListView(
               children: [
                 titleField(context,
@@ -262,78 +264,90 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                     style: headline6!.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
-                if (radioBoolList[key])
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(
-                        width: 100.0,
-                        child: TextFormField(
-                          controller: _qNonControllers[key],
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'NON Q?',
-                            labelStyle: TextStyle(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _qNonControllers[key].text = value;
-                              _qNonControllers[key].selection =
-                                  TextSelection.fromPosition(TextPosition(
-                                      offset:
-                                          _qNonControllers[key].text.length));
-                            });
-                          },
+                // if (radioBoolList[key])
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SizedBox(
+                      width: 100.0,
+                      child: TextFormField(
+                        controller: _qOuiControllers[key],
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'OUI Q?',
+                          labelStyle: TextStyle(),
                         ),
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            return 'Le numero est obligatoire';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _qOuiControllers[key].text = (value == "") ? "-" : value;
+                            _qOuiControllers[key].selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset: _qOuiControllers[key].text.length));
+                          });
+                        },
                       ),
-                      const SizedBox(
-                        width: 10.0,
-                      ),
-                      SizedBox(
-                        width: 100.0,
-                        child: TextFormField(
-                          controller: _qOuiControllers[key],
-                          keyboardType: TextInputType.number,
-                          decoration: const InputDecoration(
-                            labelText: 'OUI Q?',
-                            labelStyle: TextStyle(),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              _qOuiControllers[key].text = value;
-                              _qOuiControllers[key].selection =
-                                  TextSelection.fromPosition(TextPosition(
-                                      offset:
-                                          _qOuiControllers[key].text.length));
-                            });
-                          },
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    SizedBox(
+                      width: 100.0,
+                      child: TextFormField(
+                        controller: _qNonControllers[key],
+                        keyboardType: TextInputType.number,
+                        decoration: const InputDecoration(
+                          labelText: 'NON Q?',
+                          labelStyle: TextStyle(),
                         ),
+                        validator: (value) {
+                          if (value != null && value.isEmpty) {
+                            return 'Le numero est obligatoire';
+                          } else {
+                            return null;
+                          }
+                        },
+                        onChanged: (value) {
+                          setState(() {
+                            _qNonControllers[key].text = 
+                                (value == "") ? "-" : value;
+                            _qNonControllers[key].selection =
+                                TextSelection.fromPosition(TextPosition(
+                                    offset: _qNonControllers[key].text.length));
+                          });
+                        },
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
+                ),
                 Row(
                   children: [
-                    IconButton(
-                      icon: const Icon(Icons.save),
-                      onPressed: () {
-                        setState(() {
-                          onUpdate(
-                            key,
-                            _questionControllers[key].text,
-                            typeWidgetList[key],
-                            _qOuiControllers[key].text,
-                            _qNonControllers[key].text,
-                            multiControllerList1[key].text,
-                            multiControllerList2[key].text,
-                            multiControllerList3[key].text,
-                            multiControllerList4[key].text,
-                            multiControllerList5[key].text,
-                          );
-                          updateCampaign();
-                        });
-                      },
-                    ),
-                    // if (radioBool) const SwitchItemWidget(),
+                    // IconButton(
+                    //   icon: const Icon(Icons.save),
+                    //   onPressed: () {
+                    //     setState(() {
+                    //       onUpdate(
+                    //         key,
+                    //         _questionControllers[key].text,
+                    //         typeWidgetList[key],
+                    //         _qOuiControllers[key].text,
+                    //         _qNonControllers[key].text,
+                    //         multiControllerList1[key].text,
+                    //         multiControllerList2[key].text,
+                    //         multiControllerList3[key].text,
+                    //         multiControllerList4[key].text,
+                    //         multiControllerList5[key].text,
+                    //       );
+                    //       updateCampaign();
+                    //     });
+                    //   },
+                    // ),
                     IconButton(
                       icon: const Icon(Icons.add),
                       onPressed: () {
@@ -378,6 +392,20 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                           dropdownBoolList.add(dropdownBool);
                           dateTImeBoolList.add(dateTImeBool);
                           imageBoolList.add(imageBool);
+
+                          onUpdate(
+                            key,
+                            _questionControllers[key].text,
+                            typeWidgetList[key],
+                            _qOuiControllers[key].text,
+                            _qNonControllers[key].text,
+                            multiControllerList1[key].text,
+                            multiControllerList2[key].text,
+                            multiControllerList3[key].text,
+                            multiControllerList4[key].text,
+                            multiControllerList5[key].text,
+                          );
+                          updateCampaign();
                         });
                       },
                     ),
@@ -654,12 +682,14 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
       'value': [
         {'question': question},
         {'typeWidget': typeWidget},
-        {'condition': [
+        {
+          'condition': [
             {'qOui': qOui},
             {'qNon': qNon},
           ]
         },
-        {'multiChoice': [
+        {
+          'multiChoice': [
             {'multiControllerList1': multiController1},
             {'multiControllerList2': multiController2},
             {'multiControllerList3': multiController3},
@@ -688,15 +718,18 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
     print('_values2 $_values');
     print('jsonList $jsonList');
 
+    print('title ${widget.campaignModel.title}');
+    print('subTitle ${widget.campaignModel.subTitle}');
+
     final campaignModel = CampaignModel(
-        id: widget.campaignModel.id,
-        campaignName: widget.campaignModel.campaignName,
-        scripting: jsonList,
-        title: widget.campaignModel.title,
-        subTitle: widget.campaignModel.subTitle,
-        date: widget.campaignModel.date,
-        userName: userName.toString(),
-        superviseur: superviseur.toString(),
+      id: widget.campaignModel.id,
+      campaignName: widget.campaignModel.campaignName,
+      scripting: jsonList,
+      title: widget.campaignModel.title,
+      subTitle: widget.campaignModel.subTitle,
+      date: widget.campaignModel.date,
+      userName: userName.toString(),
+      superviseur: superviseur.toString(),
     );
 
     await CampaignRepository().updateData(campaignModel);

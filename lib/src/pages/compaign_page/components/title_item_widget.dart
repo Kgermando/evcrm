@@ -2,7 +2,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart';
 import 'package:crm_spx/src/models/campaign_model.dart';
 import 'package:crm_spx/src/models/user_model.dart';
-import 'package:crm_spx/src/provider/theme_provider.dart';
 import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:flutter/material.dart';
 

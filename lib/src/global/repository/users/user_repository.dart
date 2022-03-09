@@ -61,7 +61,7 @@ class UserRepository extends ChangeNotifier {
         UserPreferences.save('tokenKey', user); // Add save user
         UserPreferences.setAuth(); // Add auth true
 
-        print('user $user');
+        // print('user $user');
         // print('userMap $userMap');
 
         return true;

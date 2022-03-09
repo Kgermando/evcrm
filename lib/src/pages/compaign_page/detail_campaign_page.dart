@@ -296,7 +296,7 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
               size: ColumnSize.S,
               label: AutoSizeText(
                 "N°",
-                maxLines: 2,
+                maxLines: 1,
                 textAlign: TextAlign.left,
                 style: bodyText1!.copyWith(fontWeight: FontWeight.bold),
               ),
@@ -328,7 +328,6 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
     final reponses = scriptingList
         .where((element) =>
             element.campaignName == widget.campaignModel.campaignName)
-        .toList()
         .map((e) => e.scripting)
         .toList();
 
@@ -339,11 +338,12 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
 
     int n = 1;
 
-    // print('numberQuestion $numberQuestion');
     return DataRow(
       cells: [
+        if (reponses.isNotEmpty)
+        // for (var i = 0; i < numberQuestion; i++) 
         DataCell(
-          Text('${n++}', style: bodyText2),
+          Text('$n', style: bodyText2),
         ),
         if (reponses.isNotEmpty)
           for (var i = 0; i < numberQuestion; i++)
@@ -356,9 +356,6 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
             DataCell(
               Text('', style: bodyText2),
             ),
-        // DataCell(
-        //   Text(reponse[2]['reponse'], style: bodyText2),
-        // ),
       ],
     );
   }

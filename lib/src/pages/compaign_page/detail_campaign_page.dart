@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:crm_spx/src/global/repository/campaigns/campaign_repository.dart';
@@ -11,7 +12,10 @@ import 'package:crm_spx/src/services/user_preferences.dart';
 import 'package:crm_spx/src/widgets/search_widget.dart';
 import 'package:crm_spx/src/widgets/title_page.dart';
 import 'package:data_table_2/data_table_2.dart';
+import 'package:excel/excel.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DetailCampaignPage extends StatefulWidget {
   const DetailCampaignPage({Key? key, required this.campaignModel})
@@ -79,9 +83,9 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
   Widget build(BuildContext context) {
     final scripting = widget.campaignModel.scripting;
     return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.campaignModel.campaignName),
-      ),
+      // appBar: AppBar(
+      //   title: Text(widget.campaignModel.campaignName),
+      // ),
       floatingActionButton: (scripting.isNotEmpty)
           ? FloatingActionButton(
               onPressed: () {
@@ -124,7 +128,7 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 TextButton.icon(
-                    onPressed: () {},
+                    onPressed: () => exportToExcel(),
                     style: ButtonStyle(
                       foregroundColor: MaterialStateProperty.all(Colors.green),
                     ),
@@ -291,7 +295,21 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
           minWidth: 600,
           border: TableBorder.all(),
           empty: Text('Pas encore de scripting', style: bodyText1),
-          columns: [
+          columns:
+              // List.generate(
+              //   reponses.length,
+              //   (index) => DataColumn2(
+              //     size: ColumnSize.L,
+              //     label: AutoSizeText(
+              //       "Q ${reponses[index][0]['id'] + 1}. ${reponses[index][1]['question']}",
+              //       maxLines: 2,
+              //       textAlign: TextAlign.left,
+              //       style: bodyText1!.copyWith(fontWeight: FontWeight.bold),
+              //     ),
+              //   ),
+              // ),
+
+              [
             DataColumn2(
               size: ColumnSize.S,
               label: AutoSizeText(
@@ -341,16 +359,15 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
     return DataRow(
       cells: [
         if (reponses.isNotEmpty)
-        // for (var i = 0; i < numberQuestion; i++) 
-        DataCell(
-          Text('$n', style: bodyText2),
-        ),
+          // for (var i = 0; i < numberQuestion; i++)
+          DataCell(
+            Text('$n', style: bodyText2),
+          ),
         if (reponses.isNotEmpty)
           for (var i = 0; i < numberQuestion; i++)
             DataCell(
               Text(reponse[i]['reponse'], style: bodyText2),
             ),
-
         if (reponses.isEmpty)
           for (var i = 0; i < numberQuestion; i++)
             DataCell(
@@ -358,6 +375,70 @@ class _DetailCampaignPageState extends State<DetailCampaignPage> {
             ),
       ],
     );
+  }
+
+  Future<void> exportToExcel() async {
+    final reponses = scriptingList
+        .where((element) =>
+            element.campaignName == widget.campaignModel.campaignName)
+        .map((e) => e.scripting)
+        .toList();
+    var excel = Excel.createExcel();
+    Sheet sheetObject = excel[widget.campaignModel.campaignName];
+
+    for (var resp in reponses) {
+      List<String> dataListCol = [
+        "${resp[0]['id']} ${resp[1]['question']}"
+      ];
+      sheetObject.insertRowIterables(dataListCol, 0);
+    }
+
+    // sheetObject.insertRowIterables([
+    //   'Date',
+    //   'Libele',
+    //   'Montant',
+    //   'Motif',
+    //   'Unité',
+    //   'Telephone',
+    //   'Succursale',
+    //   'Societé'
+    // ], 0);
+
+    for (var resp in reponses) {
+      List<String> dataListRow = [
+        resp[2]['reponse']
+      ];
+      sheetObject.insertRowIterables(dataListRow, resp[0]['id'] + 1);
+    }
+
+    // for (int i = 0; i < reponses.length; i++) {
+    //   List<String> dataList = [
+    //     DateFormat("dd/MM/yy HH-mm").format(scriptingList[i].date),
+    //     scriptingList[i].libele,
+    //     scriptingList[i].motant,
+    //     scriptingList[i].motif,
+    //     scriptingList[i].telephone,
+    //     scriptingList[i].succursale,
+    //     scriptingList[i].nameBusiness
+    //   ];
+
+      // sheetObject.insertRowIterables(dataList, i + 1);
+    // }
+    excel.setDefaultSheet(widget.campaignModel.campaignName);
+    final dir = await getApplicationDocumentsDirectory();
+    final dateTime = DateTime.now();
+    final date = DateFormat("dd-MM-yy_HH-mm").format(dateTime);
+
+    var onValue = excel.encode();
+    File('${dir.path}/$date.xlsx')
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(onValue!);
+
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: const Text("Exportation effectué!"),
+      backgroundColor: Colors.green[700],
+    ));
   }
 
   Widget tablee() {

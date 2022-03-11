@@ -12,16 +12,17 @@ class ConnexionDatabase extends ChangeNotifier {
   //   return connection;
   // }
 
-  // Future<PostgreSQLConnection> connection() async {
-  //   var connection = PostgreSQLConnection("192.168.43.225", 5432, "server",
-  //       username: "server", password: "1234", useSSL: false);
-  //   return connection;
-  // }
-
   Future<PostgreSQLConnection> connection() async {
-    var connection = PostgreSQLConnection("localhost", 5432, "crm",
-        username: "postgres", password: "kataku", useSSL: false);
-    notifyListeners();
+    var connection = PostgreSQLConnection("192.168.43.64", 5432, "server",
+        username: "server", password: "1234", useSSL: false);
     return connection;
   }
+
+  // Future<PostgreSQLConnection> connection() async {
+  //   var connection = PostgreSQLConnection("localhost", 5432, "crm",
+  //       username: "postgres", password: "kataku", useSSL: false);
+  //   notifyListeners();
+  //   return connection;
+  // }
 }
+

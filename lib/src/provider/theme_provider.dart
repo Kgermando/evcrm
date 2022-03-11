@@ -34,64 +34,64 @@ class MyThemes {
     primaryColor: Colors.black,
     fontFamily: 'Poppins',
     colorScheme: const ColorScheme.dark(),
-    textButtonTheme: TextButtonThemeData(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(5.0),
-        shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
-          return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0));
-        }),
-        textStyle: MaterialStateProperty.all(
-          const TextStyle(
-          color: Colors.white,
-        )),
-      foregroundColor: MaterialStateProperty.all(Colors.teal),
-    )),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(5.0),
-        shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
-          return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0));
-        }),
-        textStyle: MaterialStateProperty.all(
-          const TextStyle(
-            color: Colors.white,
-          )
-        ),
-        backgroundColor: MaterialStateProperty.all(Colors.teal),
-      ),
-    ),
+    // textButtonTheme: TextButtonThemeData(
+    //   style: ButtonStyle(
+    //     elevation: MaterialStateProperty.all(5.0),
+    //     shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
+    //       return RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(30.0));
+    //     }),
+    //     textStyle: MaterialStateProperty.all(
+    //       const TextStyle(
+    //       color: Colors.white,
+    //     )),
+    //   foregroundColor: MaterialStateProperty.all(Colors.teal),
+    // )),
+    // elevatedButtonTheme: ElevatedButtonThemeData(
+    //   style: ButtonStyle(
+    //     elevation: MaterialStateProperty.all(5.0),
+    //     shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
+    //       return RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(30.0));
+    //     }),
+    //     textStyle: MaterialStateProperty.all(
+    //       const TextStyle(
+    //         color: Colors.white,
+    //       )
+    //     ),
+    //     backgroundColor: MaterialStateProperty.all(Colors.teal),
+    //   ),
+    // ),
     visualDensity: VisualDensity.adaptivePlatformDensity,
   );
 
   static final lightTheme = ThemeData(
     scaffoldBackgroundColor: Colors.blue.shade50,
-    textButtonTheme: TextButtonThemeData(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(5.0),
-        shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
-          return RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0));
-        }),
-        textStyle: MaterialStateProperty.all(const TextStyle(
-          color: Colors.white,
-        )),
-        foregroundColor: MaterialStateProperty.all(Colors.teal),
-      )
-    ),
-    elevatedButtonTheme: ElevatedButtonThemeData(
-      style: ButtonStyle(
-        elevation: MaterialStateProperty.all(5.0),
-        shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
-          return RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(30.0));
-        }),
-        textStyle: MaterialStateProperty.all(const TextStyle(
-          color: Colors.white,
-        )),
-        backgroundColor: MaterialStateProperty.all(Colors.teal),
-      ),
-    ),
+    // textButtonTheme: TextButtonThemeData(
+    //   style: ButtonStyle(
+    //     elevation: MaterialStateProperty.all(5.0),
+    //     shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
+    //       return RoundedRectangleBorder(borderRadius: BorderRadius.circular(30.0));
+    //     }),
+    //     textStyle: MaterialStateProperty.all(const TextStyle(
+    //       color: Colors.white,
+    //     )),
+    //     foregroundColor: MaterialStateProperty.all(Colors.teal),
+    //   )
+    // ),
+    // elevatedButtonTheme: ElevatedButtonThemeData(
+    //   style: ButtonStyle(
+    //     elevation: MaterialStateProperty.all(5.0),
+    //     shape: MaterialStateProperty.resolveWith<OutlinedBorder>((_) {
+    //       return RoundedRectangleBorder(
+    //           borderRadius: BorderRadius.circular(30.0));
+    //     }),
+    //     textStyle: MaterialStateProperty.all(const TextStyle(
+    //       color: Colors.white,
+    //     )),
+    //     backgroundColor: MaterialStateProperty.all(Colors.teal),
+    //   ),
+    // ),
     primaryColor: Colors.white,
     fontFamily: 'Poppins',
     colorScheme: const ColorScheme.light(),

@@ -108,6 +108,8 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
     super.dispose();
   }
 
+  String title = 'Titre';
+  String subTitle = 'Description';
   String? userName;
   String? role;
   String? superviseur;
@@ -124,77 +126,78 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-
+    final headline5 = Theme.of(context).textTheme.headline5;
+    final headline6 = Theme.of(context).textTheme.headline6;
     return Scaffold(
-      appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-            // Navigator.of(context).pushNamed('listCampaign');
-          },
-        ),
-        title: Text(widget.campaignModel.campaignName),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () {
-              setState(() {
-                final question = TextEditingController();
-                final qOui = TextEditingController();
-                final qNon = TextEditingController();
-                final multiController1 = TextEditingController();
-                final multiController2 = TextEditingController();
-                final multiController3 = TextEditingController();
-                final multiController4 = TextEditingController();
-                final multiController5 = TextEditingController();
-                String typeWidget = '';
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     icon: const Icon(Icons.arrow_back),
+      //     onPressed: () {
+      //       Navigator.pop(context);
+      //       // Navigator.of(context).pushNamed('listCampaign');
+      //     },
+      //   ),
+      //   title: Text(widget.campaignModel.campaignName),
+      //   actions: [
+      //     IconButton(
+      //       icon: const Icon(Icons.add),
+      //       onPressed: () {
+      //         setState(() {
+      //           final question = TextEditingController();
+      //           final qOui = TextEditingController();
+      //           final qNon = TextEditingController();
+      //           final multiController1 = TextEditingController();
+      //           final multiController2 = TextEditingController();
+      //           final multiController3 = TextEditingController();
+      //           final multiController4 = TextEditingController();
+      //           final multiController5 = TextEditingController();
+      //           String typeWidget = '';
 
-                bool textBool = false;
-                bool checkBoxBool = false;
-                bool radioBool = false;
-                bool multiRadio = false;
-                bool multiCheckbox = false;
-                bool dropdownBool = false;
-                bool dateTImeBool = false;
-                bool imageBool = false;
+      //           bool textBool = false;
+      //           bool checkBoxBool = false;
+      //           bool radioBool = false;
+      //           bool multiRadio = false;
+      //           bool multiCheckbox = false;
+      //           bool dropdownBool = false;
+      //           bool dateTImeBool = false;
+      //           bool imageBool = false;
 
-                _count++;
+      //           _count++;
 
-                _questionControllers.add(question);
-                typeWidgetList.add(typeWidget);
-                _qOuiControllers.add(qOui);
-                _qNonControllers.add(qNon);
+      //           _questionControllers.add(question);
+      //           typeWidgetList.add(typeWidget);
+      //           _qOuiControllers.add(qOui);
+      //           _qNonControllers.add(qNon);
 
-                multiControllerList1.add(multiController1);
-                multiControllerList2.add(multiController2);
-                multiControllerList3.add(multiController3);
-                multiControllerList4.add(multiController4);
-                multiControllerList5.add(multiController5);
+      //           multiControllerList1.add(multiController1);
+      //           multiControllerList2.add(multiController2);
+      //           multiControllerList3.add(multiController3);
+      //           multiControllerList4.add(multiController4);
+      //           multiControllerList5.add(multiController5);
 
-                textBoolList.add(textBool);
-                checkBoxBoolList.add(checkBoxBool);
-                radioBoolList.add(radioBool);
-                multiRadioList.add(multiRadio);
-                multiCheckboxList.add(multiCheckbox);
-                dropdownBoolList.add(dropdownBool);
-                dateTImeBoolList.add(dateTImeBool);
-                imageBoolList.add(imageBool);
-              });
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              setState(() {
-                _count = 0;
-                _result = '';
-                _values = [];
-              });
-            },
-          )
-        ],
-      ),
+      //           textBoolList.add(textBool);
+      //           checkBoxBoolList.add(checkBoxBool);
+      //           radioBoolList.add(radioBool);
+      //           multiRadioList.add(multiRadio);
+      //           multiCheckboxList.add(multiCheckbox);
+      //           dropdownBoolList.add(dropdownBool);
+      //           dateTImeBoolList.add(dateTImeBool);
+      //           imageBoolList.add(imageBool);
+      //         });
+      //       },
+      //     ),
+      //     IconButton(
+      //       icon: const Icon(Icons.refresh),
+      //       onPressed: () {
+      //         setState(() {
+      //           _count = 0;
+      //           _result = '';
+      //           _values = [];
+      //         });
+      //       },
+      //     )
+      //   ],
+      // ),
       body: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -203,22 +206,149 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                 Responsive.isDesktop(context) ? size.width / 1.5 : size.width,
             child: ListView(
               children: [
-                titleField(context,
-                    'Generate scripting ${widget.campaignModel.campaignName}'),
+                // titleField(context,'Generate scripting ${widget.campaignModel.campaignName}'),
                 Card(
                   elevation: 10,
                   child: Container(
-                    padding: const EdgeInsets.all(20.0),
-                    decoration: const BoxDecoration(
-                        border: Border(
-                      top: BorderSide(color: Colors.teal, width: 15),
-                    )),
-                    child: TitleItemWidget(campaignModel: widget.campaignModel),
-                  ),
+                      padding: const EdgeInsets.all(20.0),
+                      decoration: const BoxDecoration(
+                          border: Border(
+                        top: BorderSide(color: Colors.teal, width: 15),
+                      )),
+                      child: Column(
+                        children: [
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.add),
+                                    tooltip: 'Nouveau widget',
+                                    onPressed: () {
+                                      setState(() {
+                                        final question = TextEditingController();
+                                        final qOui = TextEditingController();
+                                        final qNon = TextEditingController();
+                                        final multiController1 = TextEditingController();
+                                        final multiController2 = TextEditingController();
+                                        final multiController3 = TextEditingController();
+                                        final multiController4 = TextEditingController();
+                                        final multiController5 = TextEditingController();
+                                        String typeWidget = '';
+
+                                        bool textBool = false;
+                                        bool checkBoxBool = false;
+                                        bool radioBool = false;
+                                        bool multiRadio = false;
+                                        bool multiCheckbox = false;
+                                        bool dropdownBool = false;
+                                        bool dateTImeBool = false;
+                                        bool imageBool = false;
+
+                                        _count++;
+
+                                        _questionControllers.add(question);
+                                        typeWidgetList.add(typeWidget);
+                                        _qOuiControllers.add(qOui);
+                                        _qNonControllers.add(qNon);
+
+                                        multiControllerList1.add(multiController1);
+                                        multiControllerList2.add(multiController2);
+                                        multiControllerList3.add(multiController3);
+                                        multiControllerList4.add(multiController4);
+                                        multiControllerList5.add(multiController5);
+
+                                        textBoolList.add(textBool);
+                                        checkBoxBoolList.add(checkBoxBool);
+                                        radioBoolList.add(radioBool);
+                                        multiRadioList.add(multiRadio);
+                                        multiCheckboxList.add(multiCheckbox);
+                                        dropdownBoolList.add(dropdownBool);
+                                        dateTImeBoolList.add(dateTImeBool);
+                                        imageBoolList.add(imageBool);
+                                      });
+                                    },
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.refresh),
+                                    tooltip: 'Reinitialiser les widgets',
+                                    onPressed: () {
+                                      setState(() {
+                                        _count = 0;
+                                        _result = '';
+                                        _values = [];
+                                      });
+                                    },
+                                  )]
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(bottom: 2.0),
+                                child: AutoSizeText(
+                                  (widget.campaignModel.title == '')
+                                      ? title.toString()
+                                      : widget.campaignModel.title,
+                                  maxLines: 3,
+                                  style: headline5!
+                                      .copyWith(fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(bottom: 20.0),
+                                child: AutoSizeText(
+                                  (widget.campaignModel.subTitle == '')
+                                      ? subTitle.toString()
+                                      : widget.campaignModel.subTitle,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 5,
+                                  style: headline6!.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.grey),
+                                ),
+                              ),
+                            ],
+                          ),
+                          TextFormField(
+                            maxLength: 50,
+                            decoration: InputDecoration(
+                              labelText: 'Titre du scripting',
+                              labelStyle: const TextStyle(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                title = value;
+                                updateCampaign();
+                              });
+                            },
+                          ),
+                          const SizedBox(
+                            height: 10.0,
+                          ),
+                          TextFormField(
+                            maxLength: 150,
+                            decoration: InputDecoration(
+                              labelText: 'Description',
+                              labelStyle: const TextStyle(),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                              ),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                subTitle = value;
+                                updateCampaign();
+                              });
+                            },
+                          ),
+                        ],
+                      )),
                 ),
-                const SizedBox(
-                  height: 20.0,
-                ),
+                // const SizedBox(
+                //   height: 20.0,
+                // ),
                 Scrollbar(
                   controller: _controllerTwo,
                   child: ListView.builder(
@@ -286,7 +416,8 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                         },
                         onChanged: (value) {
                           setState(() {
-                            _qOuiControllers[key].text = (value == "") ? "-" : value;
+                            _qOuiControllers[key].text =
+                                (value == "") ? "-" : value;
                             _qOuiControllers[key].selection =
                                 TextSelection.fromPosition(TextPosition(
                                     offset: _qOuiControllers[key].text.length));
@@ -315,7 +446,7 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                         },
                         onChanged: (value) {
                           setState(() {
-                            _qNonControllers[key].text = 
+                            _qNonControllers[key].text =
                                 (value == "") ? "-" : value;
                             _qNonControllers[key].selection =
                                 TextSelection.fromPosition(TextPosition(
@@ -350,6 +481,7 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                     // ),
                     IconButton(
                       icon: const Icon(Icons.add),
+                      tooltip: 'Nouveau widget',
                       onPressed: () {
                         setState(() {
                           final question = TextEditingController();
@@ -411,6 +543,7 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
                     ),
                     IconButton(
                       icon: const Icon(Icons.delete),
+                      tooltip: 'Supprimer le widget',
                       onPressed: () {
                         setState(() {
                           final question = TextEditingController();
@@ -718,15 +851,15 @@ class _EditCampaignPageState extends State<EditCampaignPage> {
     print('_values2 $_values');
     print('jsonList $jsonList');
 
-    print('title ${widget.campaignModel.title}');
-    print('subTitle ${widget.campaignModel.subTitle}');
+    print('title $title');
+    print('subTitle $subTitle');
 
     final campaignModel = CampaignModel(
       id: widget.campaignModel.id,
       campaignName: widget.campaignModel.campaignName,
       scripting: jsonList,
-      title: widget.campaignModel.title,
-      subTitle: widget.campaignModel.subTitle,
+      title: title.toString(),
+      subTitle: subTitle.toString(),
       date: widget.campaignModel.date,
       userName: userName.toString(),
       superviseur: superviseur.toString(),

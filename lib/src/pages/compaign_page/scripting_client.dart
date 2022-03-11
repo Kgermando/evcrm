@@ -84,9 +84,9 @@ class _ScriptingClientState extends State<ScriptingClient> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(widget.campaignModel.campaignName),
-        ),
+        // appBar: AppBar(
+        //   title: Text(widget.campaignModel.campaignName),
+        // ),
         body: Form(
           key: _form,
           child: Row(
